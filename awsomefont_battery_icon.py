@@ -8,12 +8,12 @@ Sample implementation:
         text=afBatteryIcon(1)._get_icon(),
         foreground=colors[5],
         background=colors[1],
-        padding=0,
-        fontsize=16
+        padding=6,
+        fontsize=15
     ),
 """
 
-# from libqtile import widget
+from libqtile import widget
 # from pathlib import Path
 
 # Default for battery name
@@ -34,7 +34,8 @@ class afBatteryIcon:
 
     _battery = {
         "name": "",
-        "icon": ""
+        "icon": "",
+        "update": ""
     }
 
     def _set_battery_name(self):
