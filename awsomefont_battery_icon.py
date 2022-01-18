@@ -3,28 +3,17 @@ FontAwsom icons to be integrated with qtile battery widget to show energy levels
 along with orginal widget text.
 """
 
-from libqtile import widget
-from pathlib import Path
+# from libqtile import widget
+# from pathlib import Path
 
 # Default for battery name
-b_no = 0
+# b_no = 0
 
 
-class BatteryIcon:
-
-    _BATTERY = {
-        "name": "BAT0",
-        "icon": "fu"
-    }
-
-    def __init__(self, b_no: int) -> None:
-        self.b_no = b_no
-
-    def bat_name(self, b_no):
-        self._BATTERY["name"] = "BAT"+(str(b_no))
+class afBatteryIcon:
 
     # Defaults
-    b_icons = {
+    ICONS = {
         "full": "fu",
         "three-quarters": "tq",
         "half": "ha",
@@ -33,52 +22,65 @@ class BatteryIcon:
         "bolt": "bt"
     }
 
-    def battery_icon(self):
-        with open(f"/sys/class/power_supply/{_BATTERY['name']}/capacity") as bat:
+    _battery = {
+        "name": "",
+        "icon": ""
+    }
+
+    def _set_battery_name(self):
+        self._battery["name"] = "BAT"+(str(self.b_no))
+
+    def _set_battery_icon(self):
+        with open(f"/sys/class/power_supply/{self._battery['name']}/capacity") as bat:
             capacity = int(bat.readlines()[0])
 
         # ranges
-        status_ico = 1
+        status_ico = "full"
         if capacity <= 100:
-            status_ico = b_icons["full"]
+            status_ico = self.ICONS["full"]
         if capacity <= 75:
-            status_ico = b_icons["three-quarters"]
+            status_ico = self.ICONS["three-quarters"]
         if capacity <= 50:
-            status_ico = b_icons["half"]
+            status_ico = self.ICONS["half"]
         if capacity <= 25:
-            status_ico = b_icons["quarter"]
+            status_ico = self.ICONS["quarter"]
         if capacity <= 5:
-            status_ico = b_icons["empty"]
+            status_ico = self.ICONS["empty"]
 
         # match capacity:
         #     case "full":
-        #         status_ico = b_icons["full"]
+        #         status_ico = self.ICONS["full"]
         #     case "three-quarters":
-        #         status_ico = b_icons["three-quarters"]
+        #         status_ico = self.ICONS["three-quarters"]
         #     case "half":
-        #         status_ico = b_icons["half"]
+        #         status_ico = self.ICONS["half"]
         #     case "quarter":
-        #         status_ico = b_icons["quarter"]
+        #         status_ico = self.ICONS["quarter"]
         #     case "empty":
-        #         status_ico = b_icons["empty"]
+        #         status_ico = self.ICONS["empty"]
         #     case _:
-        #         status_ico = b_icons["full"]
+        #         status_ico = self.ICONS["full"]
 
-        self._BATTERY['icon'] = status_ico
+        self._battery['icon'] = status_ico
+
+    def __init__(self, b_no: int) -> None:
+        self.b_no = b_no
+        self._set_battery_name()
+        self._set_battery_icon()
 
     def _get_name(self):
-        return self._BATTERY['name']
+        return self._battery['name']
 
     def _get_icon(self):
-        return self._BATTERY['icon']
+        return self._battery['icon']
 
     def __repr__(self):
-        return f"{self._BATTERY['name']}'s current icon is: {self._BATTERY['icon']}"
+        return f"{self._battery['name']}'s current icon is: {self._battery['icon']}"
 
 
 # if __name__ == "__main__":
 #     print(battery_icon(0))
-bt0 = BatteryIcon(0)
-# print(bt0)
-print(bt0._get_name())
-print(bt0._get_icon())
+bt = afBatteryIcon(0)
+print(bt)
+print(bt._get_name())
+print(bt._get_icon())
