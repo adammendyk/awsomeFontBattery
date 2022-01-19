@@ -1,6 +1,7 @@
 """
 FontAwsom icons to be integrated with qtile battery widget to show energy levels
 along with orginal widget text.
+Updates every 30 sec.
 ---
 Sample implementation:
     widget.TextBox(
@@ -17,7 +18,6 @@ import time
 """
 
 import time
-from libqtile import widget
 # from pathlib import Path
 
 # Default for battery name
@@ -39,17 +39,15 @@ class afBatteryIcon:
     _battery = {
         "name": "",
         "icon": "",
-        "update": 30
+        "update": 60
     }
 
     def __init__(
         self,
-        b_no: int = 0,
-        update: int = 30
+        b_no: int = 0
     ) -> None:
 
         self.b_no = b_no
-        self.update = update
         self._set_battery_name()
         self._set_battery_icon()
 
@@ -72,42 +70,24 @@ class afBatteryIcon:
             status_ico = self.ICONS["quarter"]
         if capacity <= 5:
             status_ico = self.ICONS["empty"]
-
-        # match capacity:
-        #     case "full":
-        #         status_ico = self.ICONS["full"]
-        #     case "three-quarters":
-        #         status_ico = self.ICONS["three-quarters"]
-        #     case "half":
-        #         status_ico = self.ICONS["half"]
-        #     case "quarter":
-        #         status_ico = self.ICONS["quarter"]
-        #     case "empty":
-        #         status_ico = self.ICONS["empty"]
-        #     case _:
-        #         status_ico = self.ICONS["full"]
-
         self._battery['icon'] = status_ico
 
-    def _set_autoupdate(self):
-        self._battery['update'] = self.update
-
-    def _update(self):
-        pass
-
-    def _get_name(self):
-        return self._battery['name']
-
-    def _get_icon(self):
+    def get_icon(self):
         return self._battery['icon']
 
-    def __repr__(self):
+    def get_name(self):
+        return self._battery['name']
+
+    def __str__(self):
         return f"{self._battery['name']}'s current icon is: {self._battery['icon']}"
+
+    def __repr__(self):
+        return f"{self._battery['icon']}"
 
 
 # if __name__ == "__main__":
 #     print(battery_icon(0))
-# bt = afBatteryIcon(0)
+bt = afBatteryIcon(0)
 # print(bt)
-# print(bt._get_name())
-# print(bt._get_icon())
+# bt.get_icon()
+print(bt.get_icon())
