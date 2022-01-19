@@ -13,6 +13,7 @@ Sample implementation:
     ),
 """
 
+from datetime import datetime
 from libqtile import widget
 # from pathlib import Path
 
@@ -35,8 +36,14 @@ class afBatteryIcon:
     _battery = {
         "name": "",
         "icon": "",
-        "update": ""
+        "update": 30
     }
+
+    def __init__(self, b_no: int, update: int) -> None:
+        self.b_no = b_no
+        self.update = update
+        self._set_battery_name()
+        self._set_battery_icon()
 
     def _set_battery_name(self):
         self._battery["name"] = "BAT"+(str(self.b_no))
@@ -74,10 +81,11 @@ class afBatteryIcon:
 
         self._battery['icon'] = status_ico
 
-    def __init__(self, b_no: int) -> None:
-        self.b_no = b_no
-        self._set_battery_name()
-        self._set_battery_icon()
+    def _set_autoupdate(self):
+        self._battery['update'] = self.update
+
+    def _update(self):
+        pass
 
     def _get_name(self):
         return self._battery['name']
