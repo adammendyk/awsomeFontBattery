@@ -13,7 +13,7 @@ Sample implementation:
     ),
 """
 
-from libqtile import widget
+from libqtile.widget import base
 # from pathlib import Path
 
 # Default for battery name
