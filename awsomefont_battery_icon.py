@@ -11,9 +11,12 @@ Sample implementation:
         padding=6,
         fontsize=15
     ),
+---
+Dependencies:
+import time
 """
 
-from datetime import datetime
+import time
 from libqtile import widget
 # from pathlib import Path
 
@@ -39,7 +42,12 @@ class afBatteryIcon:
         "update": 30
     }
 
-    def __init__(self, b_no: int, update: int) -> None:
+    def __init__(
+        self,
+        b_no: int = 0,
+        update: int = 30
+    ) -> None:
+
         self.b_no = b_no
         self.update = update
         self._set_battery_name()
