@@ -79,10 +79,10 @@ class afBatteryIcon:
         self._set_battery_name()
         self._set_battery_icon()
 
-    def _get_name(self):
+    def get_name(self):
         return self._battery['name']
 
-    def _get_icon(self):
+    def get_icon(self):
         return self._battery['icon']
 
     def __repr__(self):
