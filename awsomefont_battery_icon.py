@@ -1,23 +1,10 @@
 """
 FontAwsom icons to be integrated with qtile battery widget to show energy levels
 along with orginal widget text.
----
-Sample implementation:
-    widget.TextBox(
-        font="FontAwesome",
-        text=afBatteryIcon(1)._get_icon(),
-        foreground=colors[5],
-        background=colors[1],
-        padding=6,
-        fontsize=15
-    ),
+
 """
 
 from libqtile.widget import base
-# from pathlib import Path
-
-# Default for battery name
-# b_no = 0
 
 
 class afBatteryIcon:
