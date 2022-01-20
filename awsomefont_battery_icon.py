@@ -9,88 +9,95 @@ from telnetlib import STATUS
 from libqtile.widget import base
 
 
-bat_name: str = "BAT0"
-status: str = ""  # From file /sys/class/power_supply/BAT0/status:Charging or Discharging
-capacity: int = 0  # From file /sys/class/power_supply/BAT0/capacity
-icon: str = ""  # FontAwsom icon therefore string
-
-
 class afBatteryIcon(base._TextBox):
 
     # Class defaults
     defaults = [
         (
-            "battery_name",
-            bat_name,
+            "battery",
+            None,
             "System battery name (BAT0, BAT1, BAT2...)"
         ),
         (
-            "battery_status",
-            status,
+            "status",
+            None,
             "Charging status of selected battery."
         ),
         (
-            "battery_icon",
-            icon,
+            "capacity",
+            None,
+            "Actual battery capacity in percents."
+        ),
+        (
+            "icon",
+            None,
             "Status icon (full, three-quarters, half, quarer, empty, charging)"
         ),
         (
-            "update_delay",
-            60,
-            "The delay in seconds between updates"
+            "update_interval",
+            5,
+            "Update interval seconds."
         )
     ]
-
-    # Class constants
-    ICONS = {
-        "full": "fu",
-        "three-quarters": "tq",
-        "half": "ha",
-        "quarter": "qu",
-        "empty": "em",
-        "charging": "ch"
-    }
 
     def __init__(self, **config):
         base.InLoopPollText.__init__(self, **config)
         self.add_defaults(afBatteryIcon.defaults)
-        self.add_defaults(afBatteryIcon.ICONS)
+        percent = self._get_battery_capacity()
+        self._get_battery_status()
+        self.set_icon()
 
     def _get_battery_capacity(self):
-        with open(f"/sys/class/power_supply/{bat_name}/capacity") as bat:
-            capacity = int((bat.readlines())[0])
-        return capacity
+        with open(f"/sys/class/power_supply/{self.battery}/capacity") as bat:
+            percent = int((bat.readlines())[0])
+        return percent
 
     def _get_battery_status(self):
-        with open(f"/sys/class/power_supply/{bat_name}/status") as bat:
+        with open(f"/sys/class/power_supply/{self.battery}/status") as bat:
             status = (bat.readlines())[0].strip()
         return status
 
     def set_icon(self):
+        capacity = self._get_battery_capacity()
+        # Function constants
+        ICONS = {
+            "full": "fu",
+            "three-quarters": "tq",
+            "half": "ha",
+            "quarter": "qu",
+            "empty": "em",
+            "charging": "ch"
+        }
         # Ranges
         status_ico = "full"
         if capacity <= 100:
-            status_ico = self.ICONS["full"]
+            status_ico = ICONS["full"]
         if capacity <= 75:
-            status_ico = self.ICONS["three-quarters"]
+            status_ico = ICONS["three-quarters"]
         if capacity <= 50:
-            status_ico = self.ICONS["half"]
+            status_ico = ICONS["half"]
         if capacity <= 25:
-            status_ico = self.ICONS["quarter"]
+            status_ico = ICONS["quarter"]
         if capacity <= 5:
-            status_ico = self.ICONS["empty"]
-        if status == "Charging":
-            status_ico = self.ICONS["charging"]
+            status_ico = ICONS["empty"]
+        if self.status == "Charging":
+            status_ico = ICONS["charging"]
         return status_ico
 
+    # def timer_setup(self):
+
+    #     self.timeout_add(self.update_delay, self.timer_setup)
+
     def poll(self):
-        pass
+        percentage = self._get_battery_capacity()
+        icon = percentage.get(self.capacity, [1])
+        return icon
 
 
 # if __name__ == "__main__":
 #     print(battery_icon(0))
-bt = afBatteryIcon()
+bt = afBatteryIcon(battery="BAT0")
 print(bt.defaults)
 print(bt._get_battery_capacity())
-print(bt._get_battery_status())
+# print(bt._get_battery_status())
 print(bt.set_icon())
