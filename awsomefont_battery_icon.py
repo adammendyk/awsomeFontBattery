@@ -1,11 +1,14 @@
 """
-FontAwsom icons to be integrated with qtile battery widget to show energy levels
+FontAwsome icons to be integrated with qtile battery widget to show energy levels
 along with orginal widget text.
-Battery name is set to BAT0 by default.
+Battery name is set to BAT0 by default. To change it add:
+widget.afBatteryIcon(
+    battery="BAT#"
+)
+# - being number of battery you want to add (0, 1, 2...)
 
 """
 
-from telnetlib import STATUS
 from libqtile.widget import base
 
 
@@ -15,7 +18,7 @@ class afBatteryIcon(base._TextBox):
     defaults = [
         (
             "battery",
-            None,
+            "BAT0",
             "System battery name (BAT0, BAT1, BAT2...)"
         ),
         (
@@ -61,15 +64,15 @@ class afBatteryIcon(base._TextBox):
         capacity = self._get_battery_capacity()
         # Function constants
         ICONS = {
-            "full": "fu",
-            "three-quarters": "tq",
-            "half": "ha",
-            "quarter": "qu",
-            "empty": "em",
-            "charging": "ch"
+            "full": "",
+            "three-quarters": "",
+            "half": "",
+            "quarter": "",
+            "empty": "",
+            "charging": ""
         }
         # Ranges
-        status_ico = "full"
+        # status_ico = "full"
         if capacity <= 100:
             status_ico = ICONS["full"]
         if capacity <= 75:
@@ -96,8 +99,8 @@ class afBatteryIcon(base._TextBox):
 
 # if __name__ == "__main__":
 #     print(battery_icon(0))
-bt = afBatteryIcon(battery="BAT0")
-print(bt.defaults)
-print(bt._get_battery_capacity())
-# print(bt._get_battery_status())
-print(bt.set_icon())
+# bt = afBatteryIcon(battery="BAT0")
+# print(bt.defaults)
+# print(bt._get_battery_capacity())
+# # print(bt._get_battery_status())
+# print(bt.set_icon())
