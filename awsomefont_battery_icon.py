@@ -1,38 +1,73 @@
 """
 FontAwsom icons to be integrated with qtile battery widget to show energy levels
 along with orginal widget text.
+Battery name is set to BAT0 by default.
 
 """
 
+from telnetlib import STATUS
 from libqtile.widget import base
 
 
-class afBatteryIcon:
+bat_name: str = "BAT0"
+status: str = ""  # From file /sys/class/power_supply/BAT0/status:Charging or Discharging
+capacity: int = 0  # From file /sys/class/power_supply/BAT0/capacity
+icon: str = ""  # FontAwsom icon therefore string
 
-    # Defaults
+
+class afBatteryIcon(base._TextBox):
+
+    # Class defaults
+    defaults = [
+        (
+            "battery_name",
+            bat_name,
+            "System battery name (BAT0, BAT1, BAT2...)"
+        ),
+        (
+            "battery_status",
+            status,
+            "Charging status of selected battery."
+        ),
+        (
+            "battery_icon",
+            icon,
+            "Status icon (full, three-quarters, half, quarer, empty, charging)"
+        ),
+        (
+            "update_delay",
+            60,
+            "The delay in seconds between updates"
+        )
+    ]
+
+    # Class constants
     ICONS = {
-        "full": "",
-        "three-quarters": "",
-        "half": "",
-        "quarter": "",
-        "empty": "",
-        "bolt": ""
+        "full": "fu",
+        "three-quarters": "tq",
+        "half": "ha",
+        "quarter": "qu",
+        "empty": "em",
+        "charging": "ch"
     }
 
-    _battery = {
-        "name": "",
-        "icon": "",
-        "update": ""
-    }
+    def __init__(self, **config):
+        base.InLoopPollText.__init__(self, **config)
+        self.add_defaults(afBatteryIcon.defaults)
+        self.add_defaults(afBatteryIcon.ICONS)
 
-    def _set_battery_name(self):
-        self._battery["name"] = "BAT"+(str(self.b_no))
+    def _get_battery_capacity(self):
+        with open(f"/sys/class/power_supply/{bat_name}/capacity") as bat:
+            capacity = int((bat.readlines())[0])
+        return capacity
 
-    def _set_battery_icon(self):
-        with open(f"/sys/class/power_supply/{self._battery['name']}/capacity") as bat:
-            capacity = int(bat.readlines()[0])
+    def _get_battery_status(self):
+        with open(f"/sys/class/power_supply/{bat_name}/status") as bat:
+            status = (bat.readlines())[0].strip()
+        return status
 
-        # ranges
+    def set_icon(self):
+        # Ranges
         status_ico = "full"
         if capacity <= 100:
             status_ico = self.ICONS["full"]
@@ -44,41 +79,18 @@ class afBatteryIcon:
             status_ico = self.ICONS["quarter"]
         if capacity <= 5:
             status_ico = self.ICONS["empty"]
+        if status == "Charging":
+            status_ico = self.ICONS["charging"]
+        return status_ico
 
-        # match capacity:
-        #     case "full":
-        #         status_ico = self.ICONS["full"]
-        #     case "three-quarters":
-        #         status_ico = self.ICONS["three-quarters"]
-        #     case "half":
-        #         status_ico = self.ICONS["half"]
-        #     case "quarter":
-        #         status_ico = self.ICONS["quarter"]
-        #     case "empty":
-        #         status_ico = self.ICONS["empty"]
-        #     case _:
-        #         status_ico = self.ICONS["full"]
-
-        self._battery['icon'] = status_ico
-
-    def __init__(self, b_no: int) -> None:
-        self.b_no = b_no
-        self._set_battery_name()
-        self._set_battery_icon()
-
-    def get_name(self):
-        return self._battery['name']
-
-    def get_icon(self):
-        return self._battery['icon']
-
-    def __repr__(self):
-        return f"{self._battery['name']}'s current icon is: {self._battery['icon']}"
+    def poll(self):
+        pass
 
 
 # if __name__ == "__main__":
 #     print(battery_icon(0))
-# bt = afBatteryIcon(0)
-# print(bt)
-# print(bt._get_name())
-# print(bt._get_icon())
+bt = afBatteryIcon()
+print(bt.defaults)
+print(bt._get_battery_capacity())
+print(bt._get_battery_status())
+print(bt.set_icon())
