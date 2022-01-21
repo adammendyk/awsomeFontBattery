@@ -69,7 +69,7 @@ class afBatteryIcon(base._TextBox):
             "half": "",
             "quarter": "",
             "empty": "",
-            "charging": ""
+            "charging": ""
         }
         # Ranges
         # status_ico = "full"
