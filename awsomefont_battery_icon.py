@@ -46,22 +46,24 @@ class afBatteryIcon(base._TextBox):
     def __init__(self, **config):
         base.InLoopPollText.__init__(self, **config)
         self.add_defaults(afBatteryIcon.defaults)
-        percent = self._get_battery_capacity()
+        self._get_battery_capacity()
         self._get_battery_status()
         self.set_icon()
 
     def _get_battery_capacity(self):
         with open(f"/sys/class/power_supply/{self.battery}/capacity") as bat:
-            percent = int((bat.readlines())[0])
-        return percent
+            self.capacity = int((bat.readlines())[0])
+        # return self.capacity
 
     def _get_battery_status(self):
         with open(f"/sys/class/power_supply/{self.battery}/status") as bat:
-            status = (bat.readlines())[0].strip()
-        return status
+            self.status = (bat.readlines())[0].strip()
+        # return status
 
     def set_icon(self):
-        capacity = self._get_battery_capacity()
+        # capacity = self._get_battery_capacity()
+        capacity = self.capacity
+
         # Function constants
         ICONS = {
             "full": "",
@@ -72,7 +74,7 @@ class afBatteryIcon(base._TextBox):
             "charging": ""
         }
         # Ranges
-        status_ico = ""
+        status_ico = self.status
         if capacity <= 100:
             status_ico = ICONS["full"]
         if capacity <= 75:
@@ -85,22 +87,21 @@ class afBatteryIcon(base._TextBox):
             status_ico = ICONS["empty"]
         if self.status == "Charging":
             status_ico = ICONS["charging"]
-        return status_ico
-
-    # def timer_setup(self):
-
-    #     self.timeout_add(self.update_delay, self.timer_setup)
+        self.icon = status_ico
 
     def poll(self):
-        percentage = self._get_battery_capacity()
-        icon = percentage.get(self.capacity, [1])
+        # self.set_icon()̣
+        icon = self.icon
         return icon
+
+    def __repr__(self):
+        return f"{self.capacity} = {self.icon}"
 
 
 # if __name__ == "__main__":
 #     print(battery_icon(0))
-# bt = afBatteryIcon(battery="BAT0")
-# print(bt.defaults)
+bt = afBatteryIcon(battery="BAT0")
+print(bt.poll())
 # print(bt._get_battery_capacity())
 # # print(bt._get_battery_status())
 # print(bt.set_icon())
