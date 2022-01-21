@@ -72,7 +72,7 @@ class afBatteryIcon(base._TextBox):
             "charging": ""
         }
         # Ranges
-        # status_ico = "full"
+        status_ico = ""
         if capacity <= 100:
             status_ico = ICONS["full"]
         if capacity <= 75:
