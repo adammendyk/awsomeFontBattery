@@ -48,23 +48,20 @@ class afBatteryIcon(base._TextBox):
     def __init__(self, **config):
         base.InLoopPollText.__init__(self, **config)
         self.add_defaults(afBatteryIcon.defaults)
-        self._get_battery_capacity()
-        self._get_battery_status()
+        self.capacity = self._get_battery_capacity()
+        self.status = self._get_battery_status()
 
     def _get_battery_capacity(self):
         with open(f"/sys/class/power_supply/{self.battery}/capacity") as bat:
-            self.capacity = int((bat.readlines())[0])
+            return int((bat.readlines())[0])
 
     def _get_battery_status(self):
         with open(f"/sys/class/power_supply/{self.battery}/status") as bat:
-            self.status = (bat.readlines())[0].strip()
+            return (bat.readlines())[0].strip()
 
     def set_icon(self):
-        self._get_battery_capacity()
-        self._get_battery_status()
-        sleep(1)
-        capacity = self.capacity
-        status = self.status
+        capacity_value = self.capacity
+        current_status = self.status
 
         # Function constants
         ICONS = {
@@ -76,32 +73,30 @@ class afBatteryIcon(base._TextBox):
             "charging": ""
         }
         # Ranges
-        status_ico = self.status
-        if capacity <= 100:
+        status_ico = ""
+        if capacity_value <= 100:
             status_ico = ICONS["full"]
-        if capacity <= 75:
+        if capacity_value <= 75:
             status_ico = ICONS["three-quarters"]
-        if capacity <= 50:
+        if capacity_value <= 50:
             status_ico = ICONS["half"]
-        if capacity <= 25:
+        if capacity_value <= 25:
             status_ico = ICONS["quarter"]
-        if capacity <= 5:
+        if capacity_value <= 5:
             status_ico = ICONS["empty"]
-        if status == "Charging":
+        if current_status == "Charging":
             status_ico = ICONS["charging"]
         self.icon = status_ico
 
     def poll(self):
-        self.set_icon()
-        # sleep(1)
-        return self.icon
+        return self.set_icon()
 
     # def __repr__(self):
     #     return f"{self.capacity} = {self.icon}"
 
 
-bt = afBatteryIcon(battery="BAT0")
-print(bt.poll())
-print(bt.capacity)
-print(bt.status)
-print(bt.icon)
+# bt = afBatteryIcon(battery="BAT0")
+# print(bt.poll())
+# print(bt.capacity)
+# print(bt.status)
+# print(bt.icon)
