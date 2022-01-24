@@ -9,7 +9,9 @@ widget.afBatteryIcon(
 
 """
 
+from time import sleep
 from libqtile.widget import base
+# from time import sleep
 
 
 class afBatteryIcon(base._TextBox):
@@ -46,6 +48,8 @@ class afBatteryIcon(base._TextBox):
     def __init__(self, **config):
         base.InLoopPollText.__init__(self, **config)
         self.add_defaults(afBatteryIcon.defaults)
+        self._get_battery_capacity()
+        self._get_battery_status()
 
     def _get_battery_capacity(self):
         with open(f"/sys/class/power_supply/{self.battery}/capacity") as bat:
@@ -58,9 +62,9 @@ class afBatteryIcon(base._TextBox):
     def set_icon(self):
         self._get_battery_capacity()
         self._get_battery_status()
+        sleep(1)
         capacity = self.capacity
         status = self.status
-        # capacity = self.capacity
 
         # Function constants
         ICONS = {
@@ -89,16 +93,15 @@ class afBatteryIcon(base._TextBox):
 
     def poll(self):
         self.set_icon()
+        # sleep(1)
         return self.icon
 
-    def __repr__(self):
-        return f"{self.capacity} = {self.icon}"
+    # def __repr__(self):
+    #     return f"{self.capacity} = {self.icon}"
 
 
-# if __name__ == "__main__":
-#     print(battery_icon(0))
-# bt = afBatteryIcon(battery="BAT0")
-# print(bt.poll())
-# print(bt._get_battery_capacity())
-# print(bt._get_battery_status())
-# print(bt.set_icon())
+bt = afBatteryIcon(battery="BAT0")
+print(bt.poll())
+print(bt.capacity)
+print(bt.status)
+print(bt.icon)
