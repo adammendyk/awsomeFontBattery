@@ -9,16 +9,14 @@ widget.afBatteryIcon(
 
 from libqtile.widget import base
 
-BAT_NAME = "BAT0"
 
-
-class afBatteryIcon(base._TextBox):
+class afBatteryIcon(base.ThreadPoolText):
 
     # Class defaults
     defaults = [
         (
             "battery",
-            BAT_NAME,
+            "BAT0",
             "System battery name (BAT0, BAT1, BAT2...)"
         ),
         (
@@ -64,7 +62,7 @@ class afBatteryIcon(base._TextBox):
     ]
 
     def __init__(self, **config):
-        base.InLoopPollText.__init__(self, **config)
+        base.ThreadPoolText.__init__(self, "", **config)
         self.add_defaults(afBatteryIcon.defaults)
         self.capacity = self._get_battery_capacity()
         self.status = self._get_battery_status()
@@ -79,8 +77,8 @@ class afBatteryIcon(base._TextBox):
             return (bat.readlines())[0].strip()
 
     def set_icon(self):
-        current_capacity = self.capacity
-        current_status = self.status
+        current_capacity = self._get_battery_capacity()
+        current_status = self._get_battery_status()
 
         # Function constants
         ICONS = {
@@ -105,7 +103,7 @@ class afBatteryIcon(base._TextBox):
             status_ico = ICONS["empty"]
         if current_status == "Charging":
             status_ico = ICONS["charging"]
-        self.icon = status_ico
+        # self.icon = status_ico
         return status_ico
 
     def draw(self):
