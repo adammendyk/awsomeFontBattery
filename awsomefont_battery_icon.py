@@ -103,7 +103,7 @@ class afBatteryIcon(base.ThreadPoolText):
             status_ico = ICONS["empty"]
         if current_status == "Charging":
             status_ico = ICONS["charging"]
-        # self.icon = status_ico
+        self.icon = status_ico
         return status_ico
 
     def draw(self):
