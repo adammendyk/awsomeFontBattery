@@ -41,7 +41,7 @@ class afBatteryIcon(base.ThreadPoolText):
         ),
         (
             "alert",
-            5,
+            9,
             "Alert battery level."
         ),
         (
