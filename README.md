@@ -1,5 +1,5 @@
 This is very simple Qtile widget to compelement/replace built one.
-It changes Font Awsome battery icons based on the battery capacity levels.
+It displays Font Awsome battery icon symbols based on the battery capacity levels.
 
 Widget or link to it must be in the same directory as Qtile config file and must be imported as usual:
 from awsomefont_battery_icon import afBatteryIcon
@@ -8,8 +8,7 @@ Battery name is set to BAT0 by default. To change it add:
 widget.afBatteryIcon(
 battery="BAT#"
 ).
-
-# - being number of battery you want to add (0, 1, 2...)
+"#" - being number of battery you want to add (0, 1, 2...)
 
 Editable parameters are:
 -> battery = "BAT0"
