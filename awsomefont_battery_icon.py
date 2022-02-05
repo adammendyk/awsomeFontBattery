@@ -107,13 +107,15 @@ class afBatteryIcon(base.ThreadPoolText):
         return status_ico
 
     def draw(self):
-        if self.capacity <= self.alert:
+        current_capacity = self._get_battery_capacity()
+        if current_capacity <= self.alert:
             self.layout.colour = self.alert_colour
         else:
             self.layout.colour = self.foreground
-        base.ThreadPoolText.draw(self)
+        return base.ThreadPoolText.draw(self)
 
     def poll(self):
+        self.draw()
         icon = self.set_icon()
         return icon
 
