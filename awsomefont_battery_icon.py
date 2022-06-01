@@ -52,12 +52,12 @@ class afBatteryIcon(base.ThreadPoolText):
         (
             "foreground",
             "#f3f4f5",
-            "Icon colour"
+            "Icon color"
         ),
         (
-            "alert_colour",
+            "alert_color",
             "#cd1f3f",
-            "Colour when empty."
+            "Color when empty."
         )
     ]
 
@@ -109,7 +109,7 @@ class afBatteryIcon(base.ThreadPoolText):
     def draw(self):
         current_capacity = self._get_battery_capacity()
         if current_capacity <= self.alert:
-            self.layout.colour = self.alert_colour
+            self.layout.colour = self.alert_color
         else:
             self.layout.colour = self.foreground
         return base.ThreadPoolText.draw(self)

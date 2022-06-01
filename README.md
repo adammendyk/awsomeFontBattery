@@ -19,7 +19,7 @@ Editable parameters are:
 "Alert battery level. x out of 100%"
 -> foreground = "#f3f4f5"
 "Icon colour"
--> alert_colour = "#cd1f3f"
+-> alert_color = "#cd1f3f"
 "Icon olour when empty."
 plus normal widget parameters as background and such...
 
